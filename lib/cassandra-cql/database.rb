@@ -111,7 +111,7 @@ module CassandraCQL
       raise Error::InvalidRequestException.new($!.why)
     end
 
-    def execute_cql_query(cql, compression=CassandraCQL::Thrift::Compression::NONE)
+    def execute_cql_query(cql, compression=CassandraCQL::Thrift::Compression::GZIP)
       if use_cql3?
         @connection.execute_cql3_query(cql, compression, CassandraCQL::Thrift::ConsistencyLevel::ONE)
       else
