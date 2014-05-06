@@ -74,6 +74,8 @@ module CassandraCQL
         obj.map { |member| quote(member, use_cql3) }.join(",")
       elsif obj.kind_of?(Hash)
         "{"+obj.map{ |key,val| "#{quote(cast_to_cql(key), use_cql3)}:#{quote(cast_to_cql(val), use_cql3)}" }.join(',')+"}"
+      elsif obj.kind_of?(Symbol)
+        RUBY_VERSION >= "1.9" ? escape(obj.to_s.dup.force_encoding('ASCII-8BIT')) : escape(obj.to_s.dup)
       elsif obj.kind_of?(String)
         "'" + obj + "'"
       elsif obj.kind_of?(BigDecimal) and !use_cql3
@@ -95,6 +97,8 @@ module CassandraCQL
       if obj.kind_of?(Array)
         obj.map { |member| cast_to_cql(member) }
       elsif obj.kind_of?(Hash)
+        obj
+      elsif obj.kind_of?(Symbol)
         obj
       elsif obj.kind_of?(Numeric)
         obj

@@ -71,6 +71,12 @@ end
 
 describe "quote" do
 
+  context "with a symbol" do
+    it "should not add quotes" do
+      Statement.quote(:a_column, USE_CQL3).should eq("a_column")
+    end
+  end
+
   context "with a string" do
     it "should add quotes" do
       Statement.quote("test", USE_CQL3).should eq("'test'")
@@ -114,6 +120,7 @@ describe "quote" do
       Statement.quote(big_decimal, USE_CQL3).should eq(result)
     end
   end
+
   context "with a boolean" do
     if USE_CQL3
       it "should not add quotes" do
@@ -138,6 +145,13 @@ describe "quote" do
 end
 
 describe "cast_to_cql" do
+  context "with a Symbol" do
+    it "should return the same object" do
+      guid = Statement.cast_to_cql(:symbol)
+      guid.should eq(:symbol)
+    end
+  end
+
   context "with a Time object" do
     it "should return a Time object with the number of microseconds since epoch" do
       ts = Time.new - 86400 # set it to yesterday just to be sure no defaulting to today misses an error
